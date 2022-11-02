@@ -1,12 +1,13 @@
-#include "../common/book.h"
+//#include "./common/book.h"
+#include <stdio.h>
 
-#include N 10
+#define N 65535 
 
 void add(int *a, int *b, int *c){
     int tid =0; // this is CPU 0
     while (tid < N){
         c[tid] = a[tid] + b[tid];
-        tid+=1;
+        tid += 1;
     }
 }
 
