@@ -27,6 +27,6 @@ sgemm: sgemm.cu
 
 clean:
 	rm -f ${TARGET}
-
+	rm *.nvvp
 
 
