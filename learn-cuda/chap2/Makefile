@@ -5,7 +5,7 @@ HOST_COMPILER ?= g++
 NVCC=${CUDA_PATH}/bin/nvcc -ccbin ${HOST_COMPILER}
 NVPROF=${CUDA_PATH}/bin/nvprof
 
-TARGET=sgemm aos soa
+TARGET=sgemm aos soa matrix_transpose conflict_solved 
 
 INCLUDES= -I${SAMPLE_PATH}/samples/common/inc 
 NVCC_FLAGS=-m64 -lineinfo
@@ -42,9 +42,19 @@ soa: soa.cu
 	${NVPROF} --analysis-metrics -o $@-analysis.nvvp ./$@
 	${NVPROF} --analysis-metrics --export-profile $@.prof ./$@
 
+matrix_transpose: matrix_transpose.cu
+	${NVCC} ${INCLUDES} ${ALL_CCFLAGS} ${GENCODE_FLAGS} -o $@ $<
+	${NVPROF} --analysis-metrics --export-profile $@.prof ./$@
+
+conflict_solved: conflict_solved.cu
+	${NVCC} ${INCLUDES} ${ALL_CCFLAGS} ${GENCODE_FLAGS} -o $@ $<
+	${NVPROF} --analysis-metrics --export-profile $@.prof ./$@
+
+
 
 clean:
 	rm -f ${TARGET}
 	rm *.nvvp
+	rm *.prof
 
 
