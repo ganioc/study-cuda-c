@@ -94,7 +94,12 @@ int main(void){
     // cudaMemcpy(b, d_b, size, cudaMemcpyDeviceToHost);
     // print_output(a, b);
 
+    
+    // cudaProfilerStart();
+
     matrix_transpose_shared<<<gridSize, blockSize>>>(d_a, d_b);
+
+    // cudaProfilerStop();
 
     // Copy result back to host
     cudaMemcpy(b, d_b, size, cudaMemcpyDeviceToHost);
