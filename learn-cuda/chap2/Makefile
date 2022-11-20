@@ -3,7 +3,9 @@ CUDA_PATH=/usr/local/cuda
 SAMPLE_PATH=/usr/local/cuda-11.0
 HOST_COMPILER ?= g++
 NVCC=${CUDA_PATH}/bin/nvcc -ccbin ${HOST_COMPILER}
-TARGET=sgemm
+NVPROF=${CUDA_PATH}/bin/nvprof
+
+TARGET=sgemm aos soa
 
 INCLUDES= -I${SAMPLE_PATH}/samples/common/inc 
 NVCC_FLAGS=-m64 -lineinfo
@@ -24,6 +26,20 @@ all: ${TARGET}
 
 sgemm: sgemm.cu 
 	${NVCC} ${INCLUDES} ${ALL_CCFLAGS} ${GENCODE_FLAGS} -o $@ $<
+	${NVPROF} -o sgemm.nvvp ./$@
+	${NVPROF} --analysis-metrics -o sgemm-analysis.nvvp ./$@
+
+aos: aos.cu
+	${NVCC} ${INCLUDES} ${ALL_CCFLAGS} ${GENCODE_FLAGS} -o $@ $<
+	${NVPROF} -o $@.nvvp ./$@
+	${NVPROF} --analysis-metrics -o $@-analysis.nvvp ./$@
+
+
+soa: soa.cu
+	${NVCC} ${INCLUDES} ${ALL_CCFLAGS} ${GENCODE_FLAGS} -o $@ $<
+	${NVPROF} -o $@.nvvp ./$@
+	${NVPROF} --analysis-metrics -o $@-analysis.nvvp ./$@
+
 
 clean:
 	rm -f ${TARGET}
