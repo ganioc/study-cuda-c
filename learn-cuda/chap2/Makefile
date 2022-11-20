@@ -28,17 +28,19 @@ sgemm: sgemm.cu
 	${NVCC} ${INCLUDES} ${ALL_CCFLAGS} ${GENCODE_FLAGS} -o $@ $<
 	${NVPROF} -o sgemm.nvvp ./$@
 	${NVPROF} --analysis-metrics -o sgemm-analysis.nvvp ./$@
+	
 
 aos: aos.cu
 	${NVCC} ${INCLUDES} ${ALL_CCFLAGS} ${GENCODE_FLAGS} -o $@ $<
 	${NVPROF} -o $@.nvvp ./$@
 	${NVPROF} --analysis-metrics -o $@-analysis.nvvp ./$@
-
+	${NVPROF} --analysis-metrics --export-profile $@.prof ./$@
 
 soa: soa.cu
 	${NVCC} ${INCLUDES} ${ALL_CCFLAGS} ${GENCODE_FLAGS} -o $@ $<
 	${NVPROF} -o $@.nvvp ./$@
 	${NVPROF} --analysis-metrics -o $@-analysis.nvvp ./$@
+	${NVPROF} --analysis-metrics --export-profile $@.prof ./$@
 
 
 clean:
