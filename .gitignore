@@ -3,6 +3,7 @@ a.out
 *.swap
 output/
 Learn-CUDA-Programming/
+*.o
 
 
 

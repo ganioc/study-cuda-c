@@ -5,7 +5,7 @@ NVCC=${CUDA_PATH}/bin/nvcc -ccbin ${HOST_COMPILER}
 NVPROF=${CUDA_PATH}/bin/nvprof
 
 
-TARGET=test image_scaling
+TARGET=unified_simple.out
 
 
 INCLUDES= -I${SAMPLE_PATH}/samples/common/inc 
@@ -25,17 +25,11 @@ $(foreach sm, ${SMS}, $(eval GENCODE_FLAGS += -gencode arch=compute_$(sm),code=s
 
 all: ${TARGET}
 
-test: test.cpp imgPgm.cpp
+unified_simple.out: unified_memory.cu
 	${NVCC} -o $@ $^
 
-image_scaling: image_scaling.o imgPgm.o
-	${NVCC} -o $@ $^
 
-image_scaling.o: image_scaling.cu
-	${NVCC} -c $<
 
-imgPgm.o: imgPgm.cpp
-	${NVCC} -c $<
 
 clean:
 	rm -f ${TARGET}

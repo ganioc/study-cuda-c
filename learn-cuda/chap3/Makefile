@@ -1,12 +1,11 @@
+
 CUDA_PATH=/usr/local/cuda
 SAMPLE_PATH=/usr/local/cuda-11.0
 HOST_COMPILER ?= g++
 NVCC=${CUDA_PATH}/bin/nvcc -ccbin ${HOST_COMPILER}
 NVPROF=${CUDA_PATH}/bin/nvprof
 
-
-TARGET=test image_scaling
-
+TARGET=cuda_thread_block sgemm
 
 INCLUDES= -I${SAMPLE_PATH}/samples/common/inc 
 NVCC_FLAGS=-m64 -lineinfo
@@ -25,20 +24,16 @@ $(foreach sm, ${SMS}, $(eval GENCODE_FLAGS += -gencode arch=compute_$(sm),code=s
 
 all: ${TARGET}
 
-test: test.cpp imgPgm.cpp
-	${NVCC} -o $@ $^
+cuda_thread_block: cuda_thread_block.cu
+	${NVCC} ${INCLUDES} ${ALL_CCFLAGS} ${GENCODE_FLAGS} -o $@ $<
 
-image_scaling: image_scaling.o imgPgm.o
-	${NVCC} -o $@ $^
+sgemm: sgemm.cu
+	${NVCC} -m 64 --resource-usage  ${INCLUDES} ${ALL_CCFLAGS} ${GENCODE_FLAGS} -o $@ $<
 
-image_scaling.o: image_scaling.cu
-	${NVCC} -c $<
-
-imgPgm.o: imgPgm.cpp
-	${NVCC} -c $<
 
 clean:
 	rm -f ${TARGET}
-	rm -f *.nvvp
-	rm -f *.prof
-	rm -f *.o
+	rm *.nvvp
+	rm *.prof
+
+
